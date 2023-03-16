@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1070666265867",
+    "project_id": "pdm-23-aula",
+    "storage_bucket": "pdm-23-aula.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1070666265867:android:8635d8cd4c00894e9e9e0e",
+        "android_client_info": {
+          "package_name": "com.pdm_aulas_2023_1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1070666265867-3r0fcjju4uunc8qr47j2180s6jv345fv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvmKhbaTL8dpr2RcK3FB44ra6iQuoAc9g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1070666265867-3r0fcjju4uunc8qr47j2180s6jv345fv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
