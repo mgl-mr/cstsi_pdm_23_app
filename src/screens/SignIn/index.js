@@ -84,7 +84,7 @@ const SignIn = ({navigation}) => {
   };
 
   const recuperarSenha = () => {
-    alert('reuperar senha');
+    navigation.navigate('ForgotPassword');
   };
 
   return (

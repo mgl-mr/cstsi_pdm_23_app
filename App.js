@@ -1,10 +1,11 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import SignIn from './src/screens/SignIn';
-import Home from './src/screens/Home';
 import Preload from './src/screens/Preload';
+import SignIn from './src/screens/SignIn';
 import SignUp from './src/screens/SignUp';
+import ForgotPassword from './src/screens/ForgotPassword';
+import Home from './src/screens/Home';
 import Cursos from './src/screens/Cursos/styles';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
@@ -20,6 +21,7 @@ const AuthStack = () => (
     <Stack.Screen component={Preload} name="Preload" />
     <Stack.Screen component={SignIn} name="SignIn" />
     <Stack.Screen component={SignUp} name="SignUp" />
+    <Stack.Screen component={ForgotPassword} name="ForgotPassword" />
   </Stack.Navigator>
 );
 
