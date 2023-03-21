@@ -43,14 +43,19 @@ const SignIn = ({navigation}) => {
       try {
         setLoading(true);
         await auth().signInWithEmailAndPassword(email, password);
-        await storeUserSession(email, password);
-        setLoading(false);
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{name: 'AppStack'}],
-          }),
-        );
+        if (auth().currentUser.emailVerified) {
+          await storeUserSession(email, password);
+          setLoading(false);
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{name: 'AppStack'}],
+            }),
+          );
+        } else {
+          setLoading(false);
+          Alert.alert('Erro', 'Email não confirmado, verifique sua caixa de entrada.');
+        }
       } catch (e) {
         setLoading(false);
         console.error('SignIn: entrar' + e);
