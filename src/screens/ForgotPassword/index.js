@@ -10,24 +10,25 @@ const ForgotPassword = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const recover = (props) => {
+  const recover = props => {
     if (email !== '') {
       setLoading(true);
-      auth().
-        sendPasswordResetEmail(email)
-        .then((r) => {
+      auth()
+        .sendPasswordResetEmail(email)
+        .then(r => {
           setLoading(false);
           Alert.alert(
-            'Atenção', 
-            'Enviammos uma email de recuperação de senha para o seguinte endereço: ' + email,
-            [{text: 'OK', onPress: () => navigation.goBack()}]
+            'Atenção',
+            'Enviammos uma email de recuperação de senha para o seguinte endereço: ' +
+              email,
+            [{text: 'OK', onPress: () => navigation.goBack()}],
           );
         })
-        .catch((e) => {
+        .catch(e => {
           setLoading(false);
           console.log('ForgotPassword, recover: ' + e);
-          switch(e.code) {
-            case 'auth/user-not-found': 
+          switch (e.code) {
+            case 'auth/user-not-found':
               Alert.alert('ERRO', 'Usuário não cadastrado');
               break;
             case 'auth/invalid-email':
@@ -45,9 +46,9 @@ const ForgotPassword = ({navigation}) => {
 
   return (
     <Body>
-      <TextInput  
-        placeholder="Email" 
-        keyboardType="email-address" 
+      <TextInput
+        placeholder="Email"
+        keyboardType="email-address"
         returnKeyType="go"
         onChangeText={t => setEmail(t)}
         autoFocus={true}
@@ -56,5 +57,5 @@ const ForgotPassword = ({navigation}) => {
       {loading && <Loading />}
     </Body>
   );
-}
+};
 export default ForgotPassword;

@@ -19,21 +19,25 @@ const SignUp = ({navigation}) => {
         auth()
           .createUserWithEmailAndPassword(email, pass)
           .then(() => {
-            auth().currentUser.sendEmailVerification()
-            .then(() => {
-              setLoading(false);
-              Alert.alert('Informação', 'Conta cadastrada com sucesso.\nFoi enviado um email de confirmação para: ' + email +'.');
-              navigation.goBack();
-            })
-            .catch((e) => {
-              console.log('SignUp, cadastrar: ' + e);
-            })
+            auth()
+              .currentUser.sendEmailVerification()
+              .then(() => {
+                setLoading(false);
+                Alert.alert(
+                  'Informação',
+                  `Conta cadastrada com sucesso.Foi enviado um email de confirmação para: ${email}`,
+                );
+                navigation.goBack();
+              })
+              .catch(e => {
+                console.log('SignUp, cadastrar: ' + e);
+              });
           })
-          .catch((e) => {
+          .catch(e => {
             setLoading(false);
             console.log('SignUp, cadastrar: ' + e);
-            switch(e.code) {
-              case 'auth/email-already-in-use': 
+            switch (e.code) {
+              case 'auth/email-already-in-use':
                 Alert.alert('ERRO', 'Email já está em uso.');
                 break;
               case 'auth/operation-not-allowed':
@@ -43,7 +47,10 @@ const SignUp = ({navigation}) => {
                 Alert.alert('ERRO', 'email inválido.');
                 break;
               case 'auth/weak-password':
-                Alert.alert('ERRO', 'Senha fraca, por favor, digite uma senha forte.');
+                Alert.alert(
+                  'ERRO',
+                  'Senha fraca, por favor, digite uma senha forte.',
+                );
                 break;
             }
           });

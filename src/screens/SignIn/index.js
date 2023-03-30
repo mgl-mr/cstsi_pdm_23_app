@@ -54,7 +54,10 @@ const SignIn = ({navigation}) => {
           );
         } else {
           setLoading(false);
-          Alert.alert('Erro', 'Email não confirmado, verifique sua caixa de entrada.');
+          Alert.alert(
+            'Erro',
+            'Email não confirmado, verifique sua caixa de entrada.',
+          );
         }
       } catch (e) {
         setLoading(false);
