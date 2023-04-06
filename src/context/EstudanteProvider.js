@@ -40,11 +40,21 @@ export const EstudanteProvider = ({children}) => {
       return true;
     } catch (error) {
       console.log('EstudanteProvider, save' + error);
+      return false;
+    }
+  };
+
+  const del = async uid => {
+    try {
+      await firestore().collection('estudantes').doc(uid).delete();
+      return true;
+    } catch (error) {
+      console.log('EstudanteProvider, del' + error);
     }
   };
 
   return (
-    <EstudanteContext.Provider value={{estudantes, save}}>
+    <EstudanteContext.Provider value={{estudantes, save, del}}>
       {children}
     </EstudanteContext.Provider>
   );

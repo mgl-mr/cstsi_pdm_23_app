@@ -5,6 +5,7 @@ import MyButtom from '../../components/MyButtom';
 import {EstudanteContext} from '../../context/EstudanteProvider';
 import {Container, TextInput} from './styles';
 import Loading from '../../components/Loading';
+import DeleteButton from '../../components/DeleteButton';
 
 const Estudante = ({navigation, route}) => {
   const [uid, setUid] = useState('');
@@ -12,12 +13,14 @@ const Estudante = ({navigation, route}) => {
   const [curso, setCurso] = useState();
   const [loading, setLoading] = useState(false);
 
-  const {save} = useContext(EstudanteContext);
+  const {save, del} = useContext(EstudanteContext);
 
   useEffect(() => {
-    setNome(route.params.value.nome);
-    setCurso(route.params.value.curso);
-    setUid(route.params.value.uid);
+    if (route.params.value) {
+      setNome(route.params.value.nome);
+      setCurso(route.params.value.curso);
+      setUid(route.params.value.uid);
+    }
   }, [route]);
 
   const salvar = async () => {
@@ -41,6 +44,25 @@ const Estudante = ({navigation, route}) => {
     }
   };
 
+  const excluir = () => {
+    Alert.alert('Atenção', 'Você tem certeza que deseja excluir o aluno?', [
+      {
+        text: 'Não',
+        onPress: () => {},
+        style: 'cancel',
+      },
+      {
+        text: 'Sim',
+        onPress: async () => {
+          setLoading(true);
+          await del(uid);
+          setLoading(false);
+          navigation.goBack();
+        },
+      },
+    ]);
+  };
+
   return (
     <Container>
       <TextInput
@@ -58,6 +80,7 @@ const Estudante = ({navigation, route}) => {
         value={curso}
       />
       <MyButtom text="Salvar" onClick={salvar} />
+      {uid ? <DeleteButton texto="Excluir" onClick={excluir} /> : null}
       {loading && <Loading />}
     </Container>
   );

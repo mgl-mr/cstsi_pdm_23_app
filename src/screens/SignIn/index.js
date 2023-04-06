@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -22,12 +22,12 @@ const SignIn = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  async function storeUserSession(email, pass) {
+  async function storeUserSession(emailLocal, pass) {
     try {
       await EncryptedStorage.setItem(
         'user_session',
         JSON.stringify({
-          email,
+          email: emailLocal,
           pass,
         }),
       );
