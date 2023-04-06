@@ -28,8 +28,23 @@ export const EstudanteProvider = ({children}) => {
     };
   }, []);
 
+  const save = async estudante => {
+    try {
+      await firestore().collection('estudantes').doc(estudante.uid).set(
+        {
+          curso: estudante.curso,
+          nome: estudante.nome,
+        },
+        {merge: true},
+      );
+      return true;
+    } catch (error) {
+      console.log('EstudanteProvider, save' + error);
+    }
+  };
+
   return (
-    <EstudanteContext.Provider value={{estudantes}}>
+    <EstudanteContext.Provider value={{estudantes, save}}>
       {children}
     </EstudanteContext.Provider>
   );

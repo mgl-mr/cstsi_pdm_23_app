@@ -1,5 +1,5 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {Alert, View} from 'react-native';
+import React, {useContext, useEffect} from 'react';
+import {Alert} from 'react-native';
 import {CommonActions} from '@react-navigation/native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
@@ -13,8 +13,8 @@ const Home = ({navigation}) => {
   const {estudantes} = useContext(EstudanteContext);
 
   useEffect(() => {
-    console.log(estudantes);
-  }), [estudantes];
+    //console.log(estudantes);
+  }, [estudantes]);
 
   const logout = async () => {
     EncryptedStorage.removeItem('user_session')
@@ -33,12 +33,7 @@ const Home = ({navigation}) => {
   };
 
   const routeStudent = value => {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{name: 'Estudante', params: {value}}],
-      }),
-    );
+    navigation.navigate('Estudante', {value});
   };
 
   return (
