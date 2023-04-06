@@ -46,7 +46,6 @@ const AppStack = () => (
       }}
     />
     <Tab.Screen component={Cursos} name="Cursos" size={24} />
-    <Tab.Screen component={Estudante} name="Estudante" size={24} />
   </Tab.Navigator>
 );
 
@@ -59,6 +58,11 @@ const Navigator = () => (
       }}>
       <Stack.Screen component={AuthStack} name="AuthStack" />
       <Stack.Screen component={AppStack} name="AppStack" />
+      <Stack.Screen
+        component={Estudante}
+        name="Estudante"
+        options={{tabBarLabel: 'Estudante', presentation: 'modal'}}
+      />
     </Stack.Navigator>
   </NavigationContainer>
 );

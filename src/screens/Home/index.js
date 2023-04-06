@@ -14,8 +14,7 @@ const Home = ({navigation}) => {
 
   useEffect(() => {
     console.log(estudantes);
-  }),
-    [estudantes];
+  }), [estudantes];
 
   const logout = async () => {
     EncryptedStorage.removeItem('user_session')
