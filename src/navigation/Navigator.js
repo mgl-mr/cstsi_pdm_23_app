@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -40,12 +41,17 @@ const AppStack = () => (
       name="Home"
       options={{
         tabBarLabel: 'Alunos',
-        tabBarIcon: () => {
-          <Icon name="people" color={COLORS.primary} />;
-        },
+        tabBarIcon: () => <Icon name="people" color={COLORS.primary} />,
       }}
     />
-    <Tab.Screen component={Cursos} name="Cursos" size={24} />
+    <Tab.Screen
+      component={Cursos}
+      name="Cursos"
+      options={{
+        tabBarLabel: 'Cursos',
+        tabBarIcon: () => <Icon name="people" color={COLORS.primary} />,
+      }}
+    />
   </Tab.Navigator>
 );
 
