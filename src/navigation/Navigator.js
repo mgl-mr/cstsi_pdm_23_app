@@ -13,6 +13,7 @@ import ForgotPassword from '../screens/ForgotPassword';
 import Cursos from '../screens/Cursos/styles';
 import {COLORS} from '../assets/colors';
 import Estudante from '../screens/Estudante';
+import Lobbys from '../screens/Lobbys';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -41,6 +42,14 @@ const AppStack = () => (
       name="Home"
       options={{
         tabBarLabel: 'Alunos',
+        tabBarIcon: () => <Icon name="people" color={COLORS.primary} />,
+      }}
+    />
+    <Tab.Screen
+      component={Lobbys}
+      name="Lobbys"
+      options={{
+        tabBarLabel: 'Lobbys',
         tabBarIcon: () => <Icon name="people" color={COLORS.primary} />,
       }}
     />

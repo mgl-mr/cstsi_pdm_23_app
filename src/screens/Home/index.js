@@ -1,11 +1,11 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Alert, ToastAndroid} from 'react-native';
+import {Alert} from 'react-native';
 import {CommonActions} from '@react-navigation/native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
 import {EstudanteContext} from '../../context/EstudanteProvider';
 import MyButtom from '../../components/MyButtom';
-import {Container, Text} from './styles';
+import {Container} from './styles';
 import Item from './Item';
 import AddFloatButton from '../../components/AddFloatButton';
 import Search from '../../components/Search';
