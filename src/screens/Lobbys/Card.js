@@ -28,7 +28,7 @@ const Container = styled.View`
 `;
 
 const Div = styled.View`
-  width: 50%;
+  width: 70%;
   background-color: ${COLORS.primary};
 `;
 
