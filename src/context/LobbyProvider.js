@@ -30,7 +30,26 @@ export const LobbyProvider = ({children}) => {
     };
   }, []);
 
+  const save = async lobby => {
+    try {
+      await firestore().collection('lobbys').doc(lobby.id).set(
+        {
+          nome: lobby.nome,
+          maxJogadores: lobby.maxJogadores,
+          convidar: lobby.convidar,
+          id_dono: lobby.id_dono,
+          id_jogo: lobby.id_jogo,
+        },
+        {merge: true},
+      );
+      return true;
+    } catch (error) {
+      console.log('LobbyProvider, save' + error);
+      return false;
+    }
+  };
+
   return (
-    <LobbyContext.Provider value={{lobbys}}>{children}</LobbyContext.Provider>
+    <LobbyContext.Provider value={{lobbys, save}}>{children}</LobbyContext.Provider>
   );
 };
