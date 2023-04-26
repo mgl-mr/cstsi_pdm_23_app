@@ -2,11 +2,11 @@ import React, {useContext} from 'react';
 
 import {LobbyContext} from '../../context/LobbyProvider';
 import {JogosContext} from '../../context/JogoProvider';
-import JogosPicker from '../../components/JogosPicker';
-import {Container, Text, FlatList} from './styles';
 import Card from './Card';
+import AddFloatButton from '../../components/AddFloatButton';
+import {Container, Text, FlatList} from './styles';
 
-const Lobbys = () => {
+const Lobbys = ({navigation}) => {
   const {lobbys} = useContext(LobbyContext);
   const {jogos} = useContext(JogosContext);
 
@@ -27,6 +27,7 @@ const Lobbys = () => {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
       />
+      <AddFloatButton onClick={() => navigation.navigate('AdicionarLobby')} />
     </Container>
   );
 };

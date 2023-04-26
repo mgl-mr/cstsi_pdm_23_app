@@ -14,6 +14,7 @@ import Cursos from '../screens/Cursos/styles';
 import {COLORS} from '../assets/colors';
 import Estudante from '../screens/Estudante';
 import Lobbys from '../screens/Lobbys';
+import AdicionarLobby from '../screens/AdicionarLobby';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -77,6 +78,11 @@ const Navigator = () => (
         component={Estudante}
         name="Estudante"
         options={{tabBarLabel: 'Estudante', presentation: 'modal'}}
+      />
+      <Stack.Screen
+        component={AdicionarLobby}
+        name="AdicionarLobby"
+        options={{tabBarLabel: 'Adicionar Lobby', presentation: 'modal'}}
       />
     </Stack.Navigator>
   </NavigationContainer>
