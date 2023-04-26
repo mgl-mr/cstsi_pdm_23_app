@@ -4,8 +4,6 @@ import styled from 'styled-components/native';
 import {COLORS} from '../../assets/colors';
 
 const Card = ({nome, jogo}) => {
-  console.log(nome);
-  console.log(jogo.urlFoto);
   return (
     <Container>
       <Div>
@@ -18,7 +16,7 @@ const Card = ({nome, jogo}) => {
 };
 
 const Container = styled.View`
-  width: 90%;
+  width: 100%;
   height: 120px;
   background-color: ${COLORS.primary};
   margin-bottom: 20px;
@@ -27,12 +25,11 @@ const Container = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  elevation: 5;
 `;
 
 const Div = styled.View`
   width: 50%;
-  background-color: ${COLORS.primary};-
+  background-color: ${COLORS.primary};
 `;
 
 const Image = styled.Image`

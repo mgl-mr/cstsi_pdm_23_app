@@ -8,3 +8,7 @@ export const Container = styled.SafeAreaView`
 export const Text = styled.Text`
   font-size: 24px;
 `;
+
+export const FlatList = styled.FlatList`
+  width: 90%;
+`;
