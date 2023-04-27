@@ -1,27 +1,27 @@
 import React, {useContext, useEffect, useState} from 'react';
 import CheckBox from '@react-native-community/checkbox';
-import {ToastAndroid} from 'react-native';
+import {Alert, ToastAndroid} from 'react-native';
 import auth from '@react-native-firebase/auth';
+import {CommonActions} from '@react-navigation/native';
 
 import {LobbyContext} from '../../context/LobbyProvider';
 import {JogosContext} from '../../context/JogoProvider';
 import Loading from '../../components/Loading';
 import JogosPicker from '../../components/JogosPicker';
 import MyButtom from '../../components/MyButtom';
+import DeleteButton from '../../components/DeleteButton';
 import {Container, Div, TextInput, Text} from './styles';
 
 const Lobby = ({navigation}) => {
   const {jogos} = useContext(JogosContext);
-  const {lobbys} = useContext(LobbyContext);
-
+  const {lobbys, save, del} = useContext(LobbyContext);
+  
   const [lobbyId, setLobbyId] = useState('');
   const [nome, setNome] = useState('');
   const [maxJogadores, setMaxJogadores] = useState('');
   const [convite, setConvite  ] = useState(false);
   const [jogoId, setJogoId] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const {save} = useContext(LobbyContext);
 
   useEffect(() => {
     const lobby = lobbys.filter(l => l.idDono === auth().currentUser.uid);
@@ -64,6 +64,30 @@ const Lobby = ({navigation}) => {
       }
   }
 
+  const excluir = () => {
+    Alert.alert('Atenção', 'Você tem certeza que deseja excluir o Lobby?', [
+      {
+        text: 'Não',
+        onPress: () => {},
+        style: 'cancel',
+      },
+      {
+        text: 'Sim',
+        onPress: async () => {
+          setLoading(true);
+          await del(lobbyId);
+          setLoading(false);
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{name: 'AppStack'}],
+            }),
+          );
+        },
+      },
+    ]);
+  };
+
   const showToastWithGravity = (mensagem) => {
     ToastAndroid.showWithGravity(
       mensagem,
@@ -93,6 +117,7 @@ const Lobby = ({navigation}) => {
       </Div>
       <JogosPicker jogos={jogos} onJogoSelecionado={setJogoId} />
       <MyButtom text="Salvar" onClick={salvar} />
+      <DeleteButton texto="Excluir" onClick={excluir} />
       {loading && <Loading />}
     </Container>
   );

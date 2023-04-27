@@ -49,7 +49,16 @@ export const LobbyProvider = ({children}) => {
     }
   };
 
+  const del = async id => {
+    try {
+      await firestore().collection('lobbys').doc(id).delete();
+      return true;
+    } catch (error) {
+      console.log('EstudanteProvider, del' + error);
+    }
+  };
+
   return (
-    <LobbyContext.Provider value={{lobbys, save}}>{children}</LobbyContext.Provider>
+    <LobbyContext.Provider value={{lobbys, save, del}}>{children}</LobbyContext.Provider>
   );
 };
