@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import CheckBox from '@react-native-community/checkbox';
 import {ToastAndroid} from 'react-native';
 import auth from '@react-native-firebase/auth';
@@ -10,8 +10,11 @@ import JogosPicker from '../../components/JogosPicker';
 import MyButtom from '../../components/MyButtom';
 import {Container, Div, TextInput, Text} from './styles';
 
-const AdicionarLobby = ({navigation}) => {
+const Lobby = ({navigation}) => {
   const {jogos} = useContext(JogosContext);
+  const {lobbys} = useContext(LobbyContext);
+
+  const [lobbyId, setLobbyId] = useState('');
   const [nome, setNome] = useState('');
   const [maxJogadores, setMaxJogadores] = useState('');
   const [convite, setConvite  ] = useState(false);
@@ -19,6 +22,15 @@ const AdicionarLobby = ({navigation}) => {
   const [loading, setLoading] = useState(false);
 
   const {save} = useContext(LobbyContext);
+
+  useEffect(() => {
+    const lobby = lobbys.filter(l => l.idDono === auth().currentUser.uid);
+    setLobbyId(lobby[0].id);
+    setNome(lobby[0].nome);
+    setMaxJogadores(lobby[0].maxJogadores);
+    setConvite(lobby[0].convidar);
+    setJogoId(lobby[0].idJogo);
+  }, []);
 
   const salvar = async () => {
     if (nome.length == 0 || maxJogadores == '' || maxJogadores == 0 || jogoId == '') {
@@ -35,7 +47,7 @@ const AdicionarLobby = ({navigation}) => {
     }
 
     let lobby = {};
-    lobby.id = '';
+    lobby.id = lobbyId;
     lobby.nome = nome;
     lobby.maxJogadores = maxJogadores;
     lobby.convidar = convite;
@@ -44,9 +56,8 @@ const AdicionarLobby = ({navigation}) => {
 
     setLoading(true);
       if (await save(lobby)) {
-        showToastWithGravity('lobby criado com sucesso');
+        showToastWithGravity('lobby atualizado com sucesso');
         setLoading(false);
-        navigation.navigate('Lobby');
       } else {
         showToastWithGravity('Ops! Deu problema ao salvar.');
         setLoading(false);
@@ -87,4 +98,4 @@ const AdicionarLobby = ({navigation}) => {
   );
 };
 
-export default AdicionarLobby;
+export default Lobby;
