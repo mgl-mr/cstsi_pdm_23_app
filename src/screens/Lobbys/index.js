@@ -15,23 +15,23 @@ const Lobbys = ({navigation}) => {
   const [lobbysFiltrados, setLobbysFiltrados] = useState('');
 
   useEffect(() => {
-    if (lobbysFiltrados == '') {
+    if (lobbysFiltrados === '') {
       setLobbysFiltrados(lobbys);
     }
-  }, [lobbysFiltrados]);
+  }, [lobbysFiltrados, lobbys]);
 
   const getJogo = idJogo => {
     const jogo = jogos.find(g => g.id === idJogo);
-    return {nome: jogo.nome, urlFoto: jogo.urlFoto}
+    return {nome: jogo.nome, urlFoto: jogo.urlFoto};
   };
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({item}) => {
     return <Card nome={item.nome} jogo={getJogo(item.idJogo)} />;
   };
 
   const filtraLobbys = id => {
-    setLobbysFiltrados(lobbys.filter(l => l.idJogo == id));
-  }
+    setLobbysFiltrados(lobbys.filter(l => l.idJogo === id));
+  };
 
   return (
     <Container>
@@ -39,9 +39,9 @@ const Lobbys = ({navigation}) => {
       <FlatList
         data={lobbysFiltrados}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
       />
-      {lobbysFiltrados != lobbys && (
+      {lobbysFiltrados !== lobbys && (
         <Button onPress={() => setLobbysFiltrados(lobbys)}>
           <Icon name="close-circle-outline" size={30} color={COLORS.primary} />
         </Button>

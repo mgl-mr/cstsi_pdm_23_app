@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
-import {View, TouchableOpacity, Text, Modal, FlatList, TextInput, StyleSheet} from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  Modal,
+  FlatList,
+  StyleSheet,
+} from 'react-native';
 
 import {COLORS} from '../assets/colors';
 import Search from './Search';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 
-const JogosPicker = ({ jogos, onJogoSelecionado }) => {
+const JogosPicker = ({jogos, onJogoSelecionado}) => {
   const [modalVisivel, setModalVisivel] = useState(false);
   const [jogoSelecionado, setJogoSelecionado] = useState(null);
   const [textoPesquisa, setTextoPesquisa] = useState('');
@@ -18,13 +24,13 @@ const JogosPicker = ({ jogos, onJogoSelecionado }) => {
     setModalVisivel(false);
   };
 
-  const selecionarJogo = (jogo) => {
+  const selecionarJogo = jogo => {
     setJogoSelecionado(jogo);
     onJogoSelecionado(jogo.id);
     ocultarModal();
   };
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({item}) => {
     return (
       <TouchableOpacity onPress={() => selecionarJogo(item)}>
         <Text style={styles.itemTexto}>{item.nome}</Text>
@@ -33,13 +39,19 @@ const JogosPicker = ({ jogos, onJogoSelecionado }) => {
   };
 
   const jogosFiltrados = jogos
-    .filter((jogo) => jogo.nome.toLowerCase().includes(textoPesquisa.toLowerCase()) && jogo.multiplayer)
+    .filter(
+      jogo =>
+        jogo.nome.toLowerCase().includes(textoPesquisa.toLowerCase()) &&
+        jogo.multiplayer,
+    )
     .slice(0, 50);
 
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={exibirModal}>
-        <Text>{jogoSelecionado ? jogoSelecionado.nome : 'Selecione um jogo'}</Text>
+        <Text>
+          {jogoSelecionado ? jogoSelecionado.nome : 'Selecione um jogo'}
+        </Text>
       </TouchableOpacity>
 
       <Modal visible={modalVisivel} onRequestClose={ocultarModal}>
@@ -47,7 +59,7 @@ const JogosPicker = ({ jogos, onJogoSelecionado }) => {
         <FlatList
           data={jogosFiltrados}
           renderItem={renderItem}
-          keyExtractor={(item) => item.id}
+          keyExtractor={item => item.id}
         />
       </Modal>
     </View>

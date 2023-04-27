@@ -59,6 +59,8 @@ export const LobbyProvider = ({children}) => {
   };
 
   return (
-    <LobbyContext.Provider value={{lobbys, save, del}}>{children}</LobbyContext.Provider>
+    <LobbyContext.Provider value={{lobbys, save, del}}>
+      {children}
+    </LobbyContext.Provider>
   );
 };

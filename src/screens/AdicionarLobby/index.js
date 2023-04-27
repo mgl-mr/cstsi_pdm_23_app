@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, {useContext, useState} from 'react';
 import CheckBox from '@react-native-community/checkbox';
 import {ToastAndroid} from 'react-native';
 import auth from '@react-native-firebase/auth';
@@ -14,14 +14,19 @@ const AdicionarLobby = ({navigation}) => {
   const {jogos} = useContext(JogosContext);
   const [nome, setNome] = useState('');
   const [maxJogadores, setMaxJogadores] = useState('');
-  const [convite, setConvite  ] = useState(false);
+  const [convite, setConvite] = useState(false);
   const [jogoId, setJogoId] = useState('');
   const [loading, setLoading] = useState(false);
 
   const {save} = useContext(LobbyContext);
 
   const salvar = async () => {
-    if (nome.length == 0 || maxJogadores == '' || maxJogadores == 0 || jogoId == '') {
+    if (
+      nome.length === 0 ||
+      maxJogadores === '' ||
+      maxJogadores === 0 ||
+      jogoId === ''
+    ) {
       showToastWithGravity('Preencha todos os campos!');
       return 0;
     }
@@ -43,17 +48,17 @@ const AdicionarLobby = ({navigation}) => {
     lobby.id_jogo = jogoId;
 
     setLoading(true);
-      if (await save(lobby)) {
-        showToastWithGravity('lobby criado com sucesso');
-        setLoading(false);
-        navigation.navigate('Lobby');
-      } else {
-        showToastWithGravity('Ops! Deu problema ao salvar.');
-        setLoading(false);
-      }
-  }
+    if (await save(lobby)) {
+      showToastWithGravity('lobby criado com sucesso');
+      setLoading(false);
+      navigation.navigate('Lobby');
+    } else {
+      showToastWithGravity('Ops! Deu problema ao salvar.');
+      setLoading(false);
+    }
+  };
 
-  const showToastWithGravity = (mensagem) => {
+  const showToastWithGravity = mensagem => {
     ToastAndroid.showWithGravity(
       mensagem,
       ToastAndroid.SHORT,
@@ -78,7 +83,7 @@ const AdicionarLobby = ({navigation}) => {
       />
       <Div>
         <Text>Convidar: </Text>
-        <CheckBox value={convite} onValueChange={setConvite}/>
+        <CheckBox value={convite} onValueChange={setConvite} />
       </Div>
       <JogosPicker jogos={jogos} onJogoSelecionado={setJogoId} />
       <MyButtom text="Salvar" onClick={salvar} />

@@ -15,11 +15,11 @@ import {Container, Div, TextInput, Text} from './styles';
 const Lobby = ({navigation}) => {
   const {jogos} = useContext(JogosContext);
   const {lobbys, save, del} = useContext(LobbyContext);
-  
+
   const [lobbyId, setLobbyId] = useState('');
   const [nome, setNome] = useState('');
   const [maxJogadores, setMaxJogadores] = useState('');
-  const [convite, setConvite  ] = useState(false);
+  const [convite, setConvite] = useState(false);
   const [jogoId, setJogoId] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -30,10 +30,15 @@ const Lobby = ({navigation}) => {
     setMaxJogadores(lobby[0].maxJogadores);
     setConvite(lobby[0].convidar);
     setJogoId(lobby[0].idJogo);
-  }, []);
+  }, [lobbys]);
 
   const salvar = async () => {
-    if (nome.length == 0 || maxJogadores == '' || maxJogadores == 0 || jogoId == '') {
+    if (
+      nome.length === 0 ||
+      maxJogadores === '' ||
+      maxJogadores === 0 ||
+      jogoId === ''
+    ) {
       showToastWithGravity('Preencha todos os campos!');
       return 0;
     }
@@ -55,14 +60,14 @@ const Lobby = ({navigation}) => {
     lobby.id_jogo = jogoId;
 
     setLoading(true);
-      if (await save(lobby)) {
-        showToastWithGravity('lobby atualizado com sucesso');
-        setLoading(false);
-      } else {
-        showToastWithGravity('Ops! Deu problema ao salvar.');
-        setLoading(false);
-      }
-  }
+    if (await save(lobby)) {
+      showToastWithGravity('lobby atualizado com sucesso');
+      setLoading(false);
+    } else {
+      showToastWithGravity('Ops! Deu problema ao salvar.');
+      setLoading(false);
+    }
+  };
 
   const excluir = () => {
     Alert.alert('Atenção', 'Você tem certeza que deseja excluir o Lobby?', [
@@ -88,7 +93,7 @@ const Lobby = ({navigation}) => {
     ]);
   };
 
-  const showToastWithGravity = (mensagem) => {
+  const showToastWithGravity = mensagem => {
     ToastAndroid.showWithGravity(
       mensagem,
       ToastAndroid.SHORT,
@@ -113,7 +118,7 @@ const Lobby = ({navigation}) => {
       />
       <Div>
         <Text>Convidar: </Text>
-        <CheckBox value={convite} onValueChange={setConvite}/>
+        <CheckBox value={convite} onValueChange={setConvite} />
       </Div>
       <JogosPicker jogos={jogos} onJogoSelecionado={setJogoId} />
       <MyButtom text="Salvar" onClick={salvar} />
