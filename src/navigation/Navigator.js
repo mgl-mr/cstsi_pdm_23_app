@@ -66,6 +66,23 @@ const AppStack = () => (
   </Tab.Navigator>
 );
 
+const LobbyStack = () => (
+  <Tab.Navigator
+    initialRouteName="Lobby"
+    screenOptions={{
+      headerShown: false,
+    }}>
+    <Tab.Screen
+      component={Lobby}
+      name="Lobby"
+      options={{
+        tabBarLabel: 'Lobby',
+        tabBarIcon: () => <Icon name="people" color={COLORS.primary} />,
+      }}
+    />
+  </Tab.Navigator>
+);
+
 const Navigator = () => (
   <NavigationContainer>
     <Stack.Navigator
@@ -75,6 +92,7 @@ const Navigator = () => (
       }}>
       <Stack.Screen component={AuthStack} name="AuthStack" />
       <Stack.Screen component={AppStack} name="AppStack" />
+      <Stack.Screen component={LobbyStack} name="LobbyStack" />
       <Stack.Screen
         component={Estudante}
         name="Estudante"
@@ -84,11 +102,6 @@ const Navigator = () => (
         component={AdicionarLobby}
         name="AdicionarLobby"
         options={{tabBarLabel: 'Adicionar Lobby', presentation: 'modal'}}
-      />
-      <Stack.Screen
-        component={Lobby}
-        name="Lobby"
-        options={{tabBarLabel: 'Lobby', presentation: 'modal'}}
       />
     </Stack.Navigator>
   </NavigationContainer>
