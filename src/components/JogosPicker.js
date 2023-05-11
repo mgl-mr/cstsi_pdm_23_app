@@ -26,7 +26,7 @@ const JogosPicker = ({jogos, onJogoSelecionado}) => {
 
   const selecionarJogo = jogo => {
     setJogoSelecionado(jogo);
-    onJogoSelecionado(jogo.id);
+    onJogoSelecionado(jogo);
     ocultarModal();
   };
 
