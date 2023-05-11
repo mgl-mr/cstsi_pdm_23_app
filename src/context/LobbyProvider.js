@@ -1,7 +1,7 @@
 import React, {createContext, useState, useEffect} from 'react';
 import firestore from '@react-native-firebase/firestore';
 
-export const LobbyContext = createContext();
+export const LobbyContext = createContext({});
 
 export const LobbyProvider = ({children}) => {
   const [lobbys, setLobbys] = useState([]);
@@ -9,6 +9,7 @@ export const LobbyProvider = ({children}) => {
   useEffect(() => {
     const listener = firestore()
       .collection('lobbys')
+      .orderBy('nome')
       .onSnapshot(snapShot => {
         let data = [];
         snapShot.forEach(doc => {
@@ -19,7 +20,7 @@ export const LobbyProvider = ({children}) => {
             maxJogadores: doc.data().maxJogadores,
             convidar: doc.data().convidar,
             idDono: doc.data().id_dono,
-            idJogo: doc.data().id_jogo,
+            jogo: doc.data().jogo,
           });
         });
         setLobbys(data);
@@ -30,18 +31,9 @@ export const LobbyProvider = ({children}) => {
     };
   }, []);
 
-  const save = async lobby => {
+  const save = async (lobby, id) => {
     try {
-      await firestore().collection('lobbys').doc(lobby.id).set(
-        {
-          nome: lobby.nome,
-          maxJogadores: lobby.maxJogadores,
-          convidar: lobby.convidar,
-          id_dono: lobby.id_dono,
-          id_jogo: lobby.id_jogo,
-        },
-        {merge: true},
-      );
+      await firestore().collection('lobbys').doc(id).set(lobby, {merge: true});
       return true;
     } catch (error) {
       console.log('LobbyProvider, save' + error);

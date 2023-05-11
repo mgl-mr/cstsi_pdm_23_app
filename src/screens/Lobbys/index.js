@@ -1,4 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
+import {ToastAndroid} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import {LobbyContext} from '../../context/LobbyProvider';
@@ -14,38 +15,41 @@ const Lobbys = ({navigation}) => {
   const {jogos} = useContext(JogosContext);
   const [lobbysFiltrados, setLobbysFiltrados] = useState('');
 
-  useEffect(() => {
-    if (lobbysFiltrados === '') {
-      setLobbysFiltrados(lobbys);
-    }
-  }, [lobbysFiltrados, lobbys]);
-
-  const getJogo = idJogo => {
-    const jogo = jogos.find(g => g.id === idJogo);
-    return {nome: jogo.nome, urlFoto: jogo.urlFoto};
-  };
+  useEffect(() => {}, [lobbys]);
 
   const renderItem = ({item}) => {
-    return <Card nome={item.nome} jogo={getJogo(item.idJogo)} />;
+    return <Card nome={item.nome} jogo={item.jogo} />;
   };
 
   const filtraLobbys = id => {
-    setLobbysFiltrados(lobbys.filter(l => l.idJogo === id));
+    let data = lobbys.filter(l => l.jogo.idJogo === id);
+    if (data.length > 0) {
+      setLobbysFiltrados(lobbys.filter(l => l.idJogo === id));
+    } else {
+      setLobbysFiltrados('');
+      showToastWithGravity('Sem resultados.');
+    }
+  };
+
+  const showToastWithGravity = mensagem => {
+    ToastAndroid.showWithGravity(
+      mensagem,
+      ToastAndroid.SHORT,
+      ToastAndroid.TOP,
+    );
   };
 
   return (
     <Container>
       <JogosPicker jogos={jogos} onJogoSelecionado={filtraLobbys} />
       <FlatList
-        data={lobbysFiltrados}
+        data={lobbysFiltrados !== '' ? lobbysFiltrados : lobbys}
         renderItem={renderItem}
         keyExtractor={item => item.id}
       />
-      {lobbysFiltrados !== lobbys && (
-        <Button onPress={() => setLobbysFiltrados(lobbys)}>
-          <Icon name="close-circle-outline" size={30} color={COLORS.primary} />
-        </Button>
-      )}
+      <Button onPress={() => setLobbysFiltrados('')}>
+        <Icon name="close-circle-outline" size={30} color={COLORS.primary} />
+      </Button>
       <AddFloatButton onClick={() => navigation.navigate('AdicionarLobby')} />
     </Container>
   );

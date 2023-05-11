@@ -1,7 +1,8 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import CheckBox from '@react-native-community/checkbox';
 import {ToastAndroid} from 'react-native';
 import auth from '@react-native-firebase/auth';
+import {CommonActions} from '@react-navigation/native';
 
 import {LobbyContext} from '../../context/LobbyProvider';
 import {JogosContext} from '../../context/JogoProvider';
@@ -15,17 +16,19 @@ const AdicionarLobby = ({navigation}) => {
   const [nome, setNome] = useState('');
   const [maxJogadores, setMaxJogadores] = useState('');
   const [convite, setConvite] = useState(false);
-  const [jogoId, setJogoId] = useState('');
+  const [jogo, setJogo] = useState('');
   const [loading, setLoading] = useState(false);
 
   const {save} = useContext(LobbyContext);
+
+  useEffect(() => {}, []);
 
   const salvar = async () => {
     if (
       nome.length === 0 ||
       maxJogadores === '' ||
       maxJogadores === 0 ||
-      jogoId === ''
+      jogo === ''
     ) {
       showToastWithGravity('Preencha todos os campos!');
       return 0;
@@ -40,18 +43,22 @@ const AdicionarLobby = ({navigation}) => {
     }
 
     let lobby = {};
-    lobby.id = '';
     lobby.nome = nome;
     lobby.maxJogadores = maxJogadores;
     lobby.convidar = convite;
     lobby.id_dono = auth().currentUser.uid;
-    lobby.id_jogo = jogoId;
+    lobby.jogo = jogo;
 
     setLoading(true);
-    if (await save(lobby)) {
+    if (await save(lobby, null)) {
       showToastWithGravity('lobby criado com sucesso');
       setLoading(false);
-      navigation.navigate('Lobby');
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: 'LobbyStack'}],
+        }),
+      );
     } else {
       showToastWithGravity('Ops! Deu problema ao salvar.');
       setLoading(false);
@@ -85,7 +92,7 @@ const AdicionarLobby = ({navigation}) => {
         <Text>Convidar: </Text>
         <CheckBox value={convite} onValueChange={setConvite} />
       </Div>
-      <JogosPicker jogos={jogos} onJogoSelecionado={setJogoId} />
+      <JogosPicker jogos={jogos} onJogoSelecionado={setJogo} />
       <MyButtom text="Salvar" onClick={salvar} />
       {loading && <Loading />}
     </Container>
