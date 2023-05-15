@@ -19,7 +19,7 @@ const AdicionarLobby = ({navigation}) => {
   const [jogo, setJogo] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const {save} = useContext(LobbyContext);
+  const {saveLobby} = useContext(LobbyContext);
 
   useEffect(() => {}, []);
 
@@ -50,7 +50,7 @@ const AdicionarLobby = ({navigation}) => {
     lobby.jogo = jogo;
 
     setLoading(true);
-    if (await save(lobby, null)) {
+    if (await saveLobby(lobby, null)) {
       showToastWithGravity('lobby criado com sucesso');
       setLoading(false);
       navigation.dispatch(

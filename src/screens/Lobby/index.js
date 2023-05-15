@@ -10,26 +10,28 @@ import Loading from '../../components/Loading';
 import JogosPicker from '../../components/JogosPicker';
 import MyButtom from '../../components/MyButtom';
 import DeleteButton from '../../components/DeleteButton';
-import {Container, Div, TextInput, Text} from './styles';
+import {Container, Scrool, Div, TextInput, Text, Image} from './styles';
 
 const Lobby = ({navigation}) => {
   const {jogos} = useContext(JogosContext);
-  const {lobbys, save, del} = useContext(LobbyContext);
+  const {lobbys, updateLobby, deleteLobby} = useContext(LobbyContext);
 
   const [lobbyId, setLobbyId] = useState('');
   const [nome, setNome] = useState('');
   const [maxJogadores, setMaxJogadores] = useState('');
   const [convite, setConvite] = useState(false);
-  const [jogoId, setJogoId] = useState('');
+  const [jogo, setJogo] = useState('');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const lobby = lobbys.filter(l => l.idDono === auth().currentUser.uid);
-    setLobbyId(lobby[0].id);
-    setNome(lobby[0].nome);
-    setMaxJogadores(lobby[0].maxJogadores);
-    setConvite(lobby[0].convidar);
-    setJogoId(lobby[0].idJogo);
+    if (lobby[0]) {
+      setLobbyId(lobby[0].id);
+      setNome(lobby[0].nome);
+      setMaxJogadores(lobby[0].maxJogadores);
+      setConvite(lobby[0].convidar);
+      setJogo(lobby[0].jogo);
+    }
   }, [lobbys]);
 
   const salvar = async () => {
@@ -37,7 +39,7 @@ const Lobby = ({navigation}) => {
       nome.length === 0 ||
       maxJogadores === '' ||
       maxJogadores === 0 ||
-      jogoId === ''
+      jogo === ''
     ) {
       showToastWithGravity('Preencha todos os campos!');
       return 0;
@@ -57,10 +59,10 @@ const Lobby = ({navigation}) => {
     lobby.maxJogadores = maxJogadores;
     lobby.convidar = convite;
     lobby.id_dono = auth().currentUser.uid;
-    lobby.id_jogo = jogoId;
+    lobby.jogo = jogo;
 
     setLoading(true);
-    if (await save(lobby)) {
+    if (await updateLobby(lobby)) {
       showToastWithGravity('lobby atualizado com sucesso');
       setLoading(false);
     } else {
@@ -80,7 +82,7 @@ const Lobby = ({navigation}) => {
         text: 'Sim',
         onPress: async () => {
           setLoading(true);
-          await del(lobbyId);
+          await deleteLobby(lobbyId);
           setLoading(false);
           navigation.dispatch(
             CommonActions.reset({
@@ -102,27 +104,32 @@ const Lobby = ({navigation}) => {
   };
   return (
     <Container>
-      <TextInput
-        placeholder="Nome Do lobby"
-        keyboardType="default"
-        returnKeyType="go"
-        onChangeText={t => setNome(t)}
-        value={nome}
-      />
-      <TextInput
-        placeholder="Máximo de jogadores"
-        keyboardType="numeric"
-        returnKeyType="go"
-        onChangeText={t => setMaxJogadores(t)}
-        value={maxJogadores}
-      />
-      <Div>
-        <Text>Convidar: </Text>
-        <CheckBox value={convite} onValueChange={setConvite} />
-      </Div>
-      <JogosPicker jogos={jogos} onJogoSelecionado={setJogoId} />
-      <MyButtom text="Salvar" onClick={salvar} />
-      <DeleteButton texto="Excluir" onClick={excluir} />
+      <Scrool>
+        <TextInput
+          placeholder="Nome Do lobby"
+          keyboardType="default"
+          returnKeyType="go"
+          onChangeText={t => setNome(t)}
+          value={nome}
+        />
+        <TextInput
+          placeholder="Máximo de jogadores"
+          keyboardType="numeric"
+          returnKeyType="go"
+          onChangeText={t => setMaxJogadores(t)}
+          value={maxJogadores}
+        />
+        <Div>
+          <Text>Convidar: </Text>
+          <CheckBox value={convite} onValueChange={setConvite} />
+        </Div>
+        <Div>
+          <Image source={{uri: jogo.urlFoto}} />
+          <JogosPicker jogos={jogos} onJogoSelecionado={setJogo} />
+        </Div>
+        <MyButtom text="Salvar" onClick={salvar} />
+        <DeleteButton texto="Excluir" onClick={excluir} />
+      </Scrool>
       {loading && <Loading />}
     </Container>
   );
