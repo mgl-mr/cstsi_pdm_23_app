@@ -1,6 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {ToastAndroid} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import auth from '@react-native-firebase/auth';
 
 import {LobbyContext} from '../../context/LobbyProvider';
 import {JogosContext} from '../../context/JogoProvider';
@@ -11,14 +12,14 @@ import {Container, FlatList, Button} from './styles';
 import {COLORS} from '../../assets/colors';
 
 const Lobbys = ({navigation}) => {
-  const {lobbys} = useContext(LobbyContext);
+  const {lobbys, enterLobby} = useContext(LobbyContext);
   const {jogos} = useContext(JogosContext);
   const [lobbysFiltrados, setLobbysFiltrados] = useState('');
 
   useEffect(() => {}, [lobbys]);
 
   const renderItem = ({item}) => {
-    return <Card nome={item.nome} jogo={item.jogo} />;
+    return <Card onPress={() => entrar(item.id)} nome={item.nome} jogo={item.jogo} />;
   };
 
   const filtraLobbys = id => {
@@ -38,6 +39,14 @@ const Lobbys = ({navigation}) => {
       ToastAndroid.TOP,
     );
   };
+
+  const entrar= (id) => {
+    let user = {
+      uid: auth().currentUser.uid,
+      email: auth().currentUser.email
+    }
+    enterLobby(user, id);
+  }
 
   return (
     <Container>

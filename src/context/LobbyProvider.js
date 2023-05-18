@@ -7,6 +7,7 @@ export const LobbyContext = createContext({});
 
 export const LobbyProvider = ({children}) => {
   const [lobbys, setLobbys] = useState([]);
+  const [lobby, setLobby] = useState({});
   const {api} = useContext(ApiContext);
   
   useEffect(() => {
@@ -18,6 +19,9 @@ export const LobbyProvider = ({children}) => {
   const getLobbys = async () => {
     try {
       const response = await api.get('/lobbys');
+      if (!response.data.documents) {
+        return false;
+      }
       let data = [];
       response.data.documents.map(d => {
         let k = d.name.split(
@@ -44,6 +48,29 @@ export const LobbyProvider = ({children}) => {
     }
   };
 
+  const getLobby = async id => {
+    try {
+      const response = await api.get('/lobbys/'+id);
+      let data = {};
+      data.id = id;
+      data.nome = response.data.fields.nome.stringValue;
+      data.maxJogadores= response.data.fields.maxJogadores.stringValue,
+      data.convidar= response.data.fields.convidar.booleanValue,
+      data.idDono= response.data.fields.id_dono.stringValue,
+      data.numJogadores=  response.data.fields.numJogadores.integerValue,
+      data.jogo = {
+        id: response.data.fields.jogo.mapValue.fields.id.stringValue,
+        nome: response.data.fields.jogo.mapValue.fields.nome.stringValue,
+        multiplayer: response.data.fields.jogo.mapValue.fields.multiplayer.booleanValue,
+        urlFoto: response.data.fields.jogo.mapValue.fields.urlFoto.stringValue,
+      },
+      setLobby(data);
+    } catch (response) {
+      console.error('Erro em getLobbys via API:');
+      console.error(response);
+    }
+  };
+
   const saveLobby = async val => {
     try {
       await api.post('/lobbys/', {
@@ -51,6 +78,7 @@ export const LobbyProvider = ({children}) => {
           nome: {stringValue: val.nome},
           maxJogadores: {stringValue: val.maxJogadores},
           convidar: {booleanValue: val.convidar},
+          numJogadores: {integerValue: 0},
           id_dono: {stringValue: val.id_dono},
           jogo: {mapValue: {
             fields: {
@@ -107,8 +135,28 @@ export const LobbyProvider = ({children}) => {
     }
   };
 
+  const enterLobby = async (user, id) => {
+    try {
+      await getLobby(id); 
+      console.log(lobby);
+      if(lobby.numJogadores === lobby.maxJogadores) {
+        return false;
+      }
+      let numJogadores = +lobby.numJogadores + 1;
+      await api.patch('/lobbys/' + id, {
+        fields: {
+          numJogadores: {integerValue: numJogadores},
+        }
+      });
+
+    } catch (response) {
+      console.error('Erro em enterLobby via API: ' + response);
+      return false;
+    }
+  };
+
   return (
-    <LobbyContext.Provider value={{lobbys, saveLobby, updateLobby, deleteLobby}}>
+    <LobbyContext.Provider value={{lobbys, saveLobby, updateLobby, deleteLobby, enterLobby}}>
       {children}
     </LobbyContext.Provider>
   );

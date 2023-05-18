@@ -3,19 +3,21 @@ import styled from 'styled-components/native';
 
 import {COLORS} from '../../assets/colors';
 
-const Card = ({nome, jogo}) => {
+const Card = ({nome, jogo, onPress}) => {
   return (
-    <Container>
-      <Div>
-        <TextNome>{nome}</TextNome>
-        <TextJogo>{jogo.nome}</TextJogo>
-      </Div>
-      <Image source={{uri: jogo.urlFoto}} />
+    <Container onPress={onPress}>
+      <>
+        <Div>
+          <TextNome>{nome}</TextNome>
+          <TextJogo>{jogo.nome}</TextJogo>
+        </Div>
+        <Image source={{uri: jogo.urlFoto}} />
+      </>
     </Container>
   );
 };
 
-const Container = styled.View`
+const Container = styled.TouchableHighlight`
   width: 100%;
   height: 120px;
   background-color: ${COLORS.primary};
