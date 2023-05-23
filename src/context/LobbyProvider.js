@@ -1,162 +1,66 @@
-import React, {createContext, useState, useEffect, useContext} from 'react';
+import React, {createContext, useState, useEffect} from 'react';
 import firestore from '@react-native-firebase/firestore';
 
-import {ApiContext} from './ApiProvider';
-
-export const LobbyContext = createContext({});
+export const LobbyContext = createContext();
 
 export const LobbyProvider = ({children}) => {
   const [lobbys, setLobbys] = useState([]);
-  const [lobby, setLobby] = useState({});
-  const {api} = useContext(ApiContext);
-  
+
   useEffect(() => {
-    if (api) {
-      getLobbys();
-    }
-  }, [api]);
-
-  const getLobbys = async () => {
-    try {
-      const response = await api.get('/lobbys');
-      if (!response.data.documents) {
-        return false;
-      }
-      let data = [];
-      response.data.documents.map(d => {
-        let k = d.name.split(
-          'projects/pdm-23-aula/databases/(default)/documents/lobbys/',
-        );
-        data.push({
-          id: k[1],
-          nome: d.fields.nome.stringValue,
-          maxJogadores: d.fields.maxJogadores.stringValue,
-          convidar: d.fields.convidar.booleanValue,
-          idDono: d.fields.id_dono.stringValue,
-          jogo: {
-            id: d.fields.jogo.mapValue.fields.id.stringValue,
-            nome: d.fields.jogo.mapValue.fields.nome.stringValue,
-            multiplayer: d.fields.jogo.mapValue.fields.multiplayer.booleanValue,
-            urlFoto: d.fields.jogo.mapValue.fields.urlFoto.stringValue,
-          },
+    const listener = firestore()
+      .collection('lobbys')
+      .onSnapshot(snapShot => {
+        let data = [];
+        snapShot.forEach(doc => {
+          //console.log(doc.id, ' => ', doc.data());
+          data.push({
+            id: doc.id,
+            nome: doc.data().nome,
+            maxJogadores: doc.data().maxJogadores,
+            numjogadores: doc.data().numjogadores,
+            convidar: doc.data().convidar,
+            idDono: doc.data().id_dono,
+            jogo: doc.data().jogo,
+          });
         });
+        setLobbys(data);
       });
-      setLobbys(data);
-    } catch (response) {
-      console.error('Erro em getLobbys via API:');
-      console.error(response);
-    }
-  };
+    return () => {
+      listener();
+    };
+  }, []);
 
-  const getLobby = async id => {
+  const saveLobby = async lobby => {
     try {
-      const response = await api.get('/lobbys/'+id);
-      let data = {};
-      data.id = id;
-      data.nome = response.data.fields.nome.stringValue;
-      data.maxJogadores= response.data.fields.maxJogadores.stringValue,
-      data.convidar= response.data.fields.convidar.booleanValue,
-      data.idDono= response.data.fields.id_dono.stringValue,
-      data.numJogadores=  response.data.fields.numJogadores.integerValue,
-      data.jogo = {
-        id: response.data.fields.jogo.mapValue.fields.id.stringValue,
-        nome: response.data.fields.jogo.mapValue.fields.nome.stringValue,
-        multiplayer: response.data.fields.jogo.mapValue.fields.multiplayer.booleanValue,
-        urlFoto: response.data.fields.jogo.mapValue.fields.urlFoto.stringValue,
-      },
-      setLobby(data);
-    } catch (response) {
-      console.error('Erro em getLobbys via API:');
-      console.error(response);
-    }
-  };
-
-  const saveLobby = async val => {
-    try {
-      await api.post('/lobbys/', {
-        fields: {
-          nome: {stringValue: val.nome},
-          maxJogadores: {stringValue: val.maxJogadores},
-          convidar: {booleanValue: val.convidar},
-          numJogadores: {integerValue: 0},
-          id_dono: {stringValue: val.id_dono},
-          jogo: {mapValue: {
-            fields: {
-              id: {stringValue: val.jogo.id},
-              nome: {stringValue: val.jogo.nome},
-              urlFoto: {stringValue: val.jogo.urlFoto},
-              multiplayer: {booleanValue: val.jogo.multiplayer},
-            }
-          }},
+      await firestore().collection('lobbys').doc(lobby.id).set(
+        {
+          nome: lobby.nome,
+          maxJogadores: lobby.maxJogadores,
+          numjogadores: 0,
+          convidar: lobby.convidar,
+          id_dono: lobby.id_dono,
+          jogo: lobby.jogo,
         },
-      });
-      getLobbys();
+        {merge: true},
+      );
       return true;
-    } catch (response) {
-      console.error('Erro em saveCompany via API: ' + response);
+    } catch (error) {
+      console.log('LobbyProvider, save' + error);
       return false;
     }
   };
 
-  const updateLobby = async val => {
+  const deleteLobby = async id => {
     try {
-      await api.patch('/lobbys/' + val.id, {
-        fields: {
-          nome: {stringValue: val.nome},
-          maxJogadores: {stringValue: val.maxJogadores},
-          convidar: {booleanValue: val.convidar},
-          id_dono: {stringValue: val.id_dono},
-          jogo: {mapValue: {
-            fields: {
-              id: {stringValue: val.jogo.id},
-              nome: {stringValue: val.jogo.nome},
-              urlFoto: {stringValue: val.jogo.urlFoto},
-              multiplayer: {booleanValue: val.jogo.multiplayer},
-            }
-          }},
-        },
-      });
-      getLobbys();
+      await firestore().collection('lobbys').doc(id).delete();
       return true;
-    } catch (response) {
-      console.error('Erro em updateCompany via API: ' + response);
-      return false;
-    }
-  };
-
-  const deleteLobby = async val => {
-    try {
-      await api.delete('/lobbys/' + val);
-      getLobbys();
-      return true;
-    } catch (response) {
-      console.error('Erro em deleteCompany via API: ' + response);
-      return false;
-    }
-  };
-
-  const enterLobby = async (user, id) => {
-    try {
-      await getLobby(id); 
-      console.log(lobby);
-      if(lobby.numJogadores === lobby.maxJogadores) {
-        return false;
-      }
-      let numJogadores = +lobby.numJogadores + 1;
-      await api.patch('/lobbys/' + id, {
-        fields: {
-          numJogadores: {integerValue: numJogadores},
-        }
-      });
-
-    } catch (response) {
-      console.error('Erro em enterLobby via API: ' + response);
-      return false;
+    } catch (error) {
+      console.log('LobbyProvider, del' + error);
     }
   };
 
   return (
-    <LobbyContext.Provider value={{lobbys, saveLobby, updateLobby, deleteLobby, enterLobby}}>
+    <LobbyContext.Provider value={{lobbys, saveLobby, deleteLobby}}>
       {children}
     </LobbyContext.Provider>
   );

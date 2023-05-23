@@ -14,12 +14,13 @@ import {Container, Scrool, Div, TextInput, Text, Image} from './styles';
 
 const Lobby = ({navigation}) => {
   const {jogos} = useContext(JogosContext);
-  const {lobbys, updateLobby, deleteLobby} = useContext(LobbyContext);
+  const {lobbys, saveLobby, deleteLobby} = useContext(LobbyContext);
 
   const [lobbyId, setLobbyId] = useState('');
   const [nome, setNome] = useState('');
   const [maxJogadores, setMaxJogadores] = useState('');
   const [convite, setConvite] = useState(false);
+  const [numJogadores, setNumjogadores] = useState('');
   const [jogo, setJogo] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -30,6 +31,7 @@ const Lobby = ({navigation}) => {
       setNome(lobby[0].nome);
       setMaxJogadores(lobby[0].maxJogadores);
       setConvite(lobby[0].convidar);
+      setNumjogadores(lobby[0].numJogadores);
       setJogo(lobby[0].jogo);
     }
   }, [lobbys]);
@@ -57,12 +59,13 @@ const Lobby = ({navigation}) => {
     lobby.id = lobbyId;
     lobby.nome = nome;
     lobby.maxJogadores = maxJogadores;
+    lobby.numJogadores = numJogadores;
     lobby.convidar = convite;
     lobby.id_dono = auth().currentUser.uid;
     lobby.jogo = jogo;
 
     setLoading(true);
-    if (await updateLobby(lobby)) {
+    if (await saveLobby(lobby)) {
       showToastWithGravity('lobby atualizado com sucesso');
       setLoading(false);
     } else {

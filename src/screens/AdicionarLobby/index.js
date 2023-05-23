@@ -43,6 +43,7 @@ const AdicionarLobby = ({navigation}) => {
     }
 
     let lobby = {};
+    lobby.id = null;
     lobby.nome = nome;
     lobby.maxJogadores = maxJogadores;
     lobby.convidar = convite;
@@ -50,7 +51,7 @@ const AdicionarLobby = ({navigation}) => {
     lobby.jogo = jogo;
 
     setLoading(true);
-    if (await saveLobby(lobby, null)) {
+    if (await saveLobby(lobby)) {
       showToastWithGravity('lobby criado com sucesso');
       setLoading(false);
       navigation.dispatch(

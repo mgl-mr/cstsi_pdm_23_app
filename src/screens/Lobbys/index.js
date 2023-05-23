@@ -8,6 +8,7 @@ import {JogosContext} from '../../context/JogoProvider';
 import Card from './Card';
 import AddFloatButton from '../../components/AddFloatButton';
 import JogosPicker from '../../components/JogosPicker';
+import Loading from '../../components/Loading';
 import {Container, FlatList, Button} from './styles';
 import {COLORS} from '../../assets/colors';
 
@@ -15,11 +16,14 @@ const Lobbys = ({navigation}) => {
   const {lobbys, enterLobby} = useContext(LobbyContext);
   const {jogos} = useContext(JogosContext);
   const [lobbysFiltrados, setLobbysFiltrados] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {}, [lobbys]);
 
   const renderItem = ({item}) => {
-    return <Card onPress={() => entrar(item.id)} nome={item.nome} jogo={item.jogo} />;
+    return (
+      <Card onPress={() => entrar(item)} nome={item.nome} jogo={item.jogo} />
+    );
   };
 
   const filtraLobbys = id => {
@@ -40,13 +44,22 @@ const Lobbys = ({navigation}) => {
     );
   };
 
-  const entrar= (id) => {
+  const entrar = async id => {
+    console.log(lobbys);
     let user = {
       uid: auth().currentUser.uid,
-      email: auth().currentUser.email
+      email: auth().currentUser.email,
+    };
+
+    setLoading(true);
+    let response = await enterLobby(user, id);
+    setLoading(false);
+    if (response !== true) {
+      showToastWithGravity(response);
+      return;
     }
-    enterLobby(user, id);
-  }
+    console.log(lobbys);
+  };
 
   return (
     <Container>
@@ -60,6 +73,7 @@ const Lobbys = ({navigation}) => {
         <Icon name="close-circle-outline" size={30} color={COLORS.primary} />
       </Button>
       <AddFloatButton onClick={() => navigation.navigate('AdicionarLobby')} />
+      {loading && <Loading />}
     </Container>
   );
 };
