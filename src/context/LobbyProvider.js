@@ -114,8 +114,33 @@ export const LobbyProvider = ({children}) => {
     }
   }
 
+  const exitLobby = async (user, lobby) => {
+    try {
+      let numJogadores = parseInt(lobby.numJogadores) - 1;
+      await firestore()
+        .collection('lobbys')
+        .doc(lobby.id)
+        .update({
+          numJogadores: numJogadores,
+          jogadores: firestore.FieldValue.arrayRemove(user),
+        });
+      setActiveLobbyId('');
+      return true;
+    } catch (error) {
+      console.log('LobbyProvider, deleteLobby' + error);
+      return false;
+    }
+  }
+
   return (
-    <LobbyContext.Provider value={{lobbys, lobby, enterLobby, saveLobby, deleteLobby}}>
+    <LobbyContext.Provider value={{
+        lobbys,
+        lobby,
+        saveLobby,
+        deleteLobby,
+        enterLobby,
+        exitLobby,
+    }}>
       {children}
     </LobbyContext.Provider>
   );

@@ -14,7 +14,7 @@ import {Container, Scrool, Div, TextInput, Text, P, Image} from './styles';
 
 const Lobby = ({navigation}) => {
   const {jogos} = useContext(JogosContext);
-  const {lobby, saveLobby, deleteLobby} = useContext(LobbyContext);
+  const {lobby, saveLobby, deleteLobby, exitLobby} = useContext(LobbyContext);
 
   const [lobbyId, setLobbyId] = useState('');
   const [dono, setDono] = useState('');
@@ -103,6 +103,27 @@ const Lobby = ({navigation}) => {
     ]);
   };
 
+  const sair = async () => {
+    showToastWithGravity('sair');
+    let jogador = jogadores.find(j => j.uid === auth().currentUser.uid);
+    
+    setLoading(true);
+    let response = await exitLobby(jogador, lobby);
+    setLoading(false);
+
+    if (!response) {
+      showToastWithGravity('Erro ao sair');
+      return;
+    }
+
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{name: 'AppStack'}],
+      }),
+    );
+  }
+
   const showToastWithGravity = mensagem => {
     ToastAndroid.showWithGravity(
       mensagem,
@@ -162,6 +183,7 @@ const Lobby = ({navigation}) => {
             <Div>
               <Text>Particpantes: {numJogadores}</Text>
             </Div>
+            <MyButtom text="Sair" onClick={sair} />
           </Scrool> 
         }
         {loading && <Loading />}
