@@ -44,6 +44,13 @@ export const Text = styled.Text`
   color: ${COLORS.black};
 `;
 
+export const P = styled.Text`
+  width: 70%;
+  height: 26px;
+  font-size: 16px;
+  color: ${COLORS.black};
+`;
+
 export const Image = styled.Image`
   width: 80px;
   height: 80px;

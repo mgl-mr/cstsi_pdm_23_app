@@ -2,6 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import {ToastAndroid} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import auth from '@react-native-firebase/auth';
+import {CommonActions} from '@react-navigation/native';
 
 import {LobbyContext} from '../../context/LobbyProvider';
 import {JogosContext} from '../../context/JogoProvider';
@@ -44,21 +45,33 @@ const Lobbys = ({navigation}) => {
     );
   };
 
-  const entrar = async id => {
-    console.log(lobbys);
+  const entrar = async lobby => {
+    if (parseInt(lobby.numJogadores) === parseInt(lobby.maxJogadores)) {
+      showToastWithGravity('Lobby cheio!');
+      console.log('cheio');
+      return false;
+    }
+    
     let user = {
       uid: auth().currentUser.uid,
       email: auth().currentUser.email,
     };
 
     setLoading(true);
-    let response = await enterLobby(user, id);
+    let response = await enterLobby(user, lobby);
     setLoading(false);
+
     if (response !== true) {
       showToastWithGravity(response);
       return;
     }
-    console.log(lobbys);
+
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{name: 'LobbyStack'}],
+      }),
+    );
   };
 
   return (

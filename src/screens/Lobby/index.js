@@ -10,31 +10,36 @@ import Loading from '../../components/Loading';
 import JogosPicker from '../../components/JogosPicker';
 import MyButtom from '../../components/MyButtom';
 import DeleteButton from '../../components/DeleteButton';
-import {Container, Scrool, Div, TextInput, Text, Image} from './styles';
+import {Container, Scrool, Div, TextInput, Text, P, Image} from './styles';
 
 const Lobby = ({navigation}) => {
   const {jogos} = useContext(JogosContext);
-  const {lobbys, saveLobby, deleteLobby} = useContext(LobbyContext);
+  const {lobby, saveLobby, deleteLobby} = useContext(LobbyContext);
 
   const [lobbyId, setLobbyId] = useState('');
+  const [dono, setDono] = useState('');
   const [nome, setNome] = useState('');
   const [maxJogadores, setMaxJogadores] = useState('');
-  const [convite, setConvite] = useState(false);
   const [numJogadores, setNumjogadores] = useState('');
+  const [jogadores, setJogadores] = useState('');
+  const [convite, setConvite] = useState(false);
   const [jogo, setJogo] = useState('');
   const [loading, setLoading] = useState(false);
-
+  const [carregandoLobby, setCarregandoLobby] = useState(true);
+  
   useEffect(() => {
-    const lobby = lobbys.filter(l => l.idDono === auth().currentUser.uid);
-    if (lobby[0]) {
-      setLobbyId(lobby[0].id);
-      setNome(lobby[0].nome);
-      setMaxJogadores(lobby[0].maxJogadores);
-      setConvite(lobby[0].convidar);
-      setNumjogadores(lobby[0].numJogadores);
-      setJogo(lobby[0].jogo);
+    if(Object.keys(lobby).length !== 0) {
+      setLobbyId(lobby.id);
+      setDono(lobby.idDono);
+      setMaxJogadores(lobby.maxJogadores);
+      setNumjogadores(lobby.numJogadores);
+      setJogadores(lobby.jogadores);
+      setConvite(lobby.convidar);
+      setJogo(lobby.jogo);
+      setNome(lobby.nome);
+      setCarregandoLobby(false);
     }
-  }, [lobbys]);
+  }, [lobby]);
 
   const salvar = async () => {
     if (
@@ -105,37 +110,64 @@ const Lobby = ({navigation}) => {
       ToastAndroid.TOP,
     );
   };
-  return (
-    <Container>
-      <Scrool>
-        <TextInput
-          placeholder="Nome Do lobby"
-          keyboardType="default"
-          returnKeyType="go"
-          onChangeText={t => setNome(t)}
-          value={nome}
-        />
-        <TextInput
-          placeholder="Máximo de jogadores"
-          keyboardType="numeric"
-          returnKeyType="go"
-          onChangeText={t => setMaxJogadores(t)}
-          value={maxJogadores}
-        />
-        <Div>
-          <Text>Convidar: </Text>
-          <CheckBox value={convite} onValueChange={setConvite} />
-        </Div>
-        <Div>
-          <Image source={{uri: jogo.urlFoto}} />
-          <JogosPicker jogos={jogos} onJogoSelecionado={setJogo} />
-        </Div>
-        <MyButtom text="Salvar" onClick={salvar} />
-        <DeleteButton texto="Excluir" onClick={excluir} />
-      </Scrool>
-      {loading && <Loading />}
-    </Container>
-  );
+
+  if (carregandoLobby) {
+    return(
+      <Container>
+        <Loading />
+      </Container>
+    );
+  } else {
+    return (
+      <Container>
+        {dono === auth().currentUser.uid ?
+          <Scrool>
+            <TextInput
+              placeholder="Nome Do lobby"
+              keyboardType="default"
+              returnKeyType="go"
+              onChangeText={t => setNome(t)}
+              value={nome}
+            />
+            <TextInput
+              placeholder="Máximo de jogadores"
+              keyboardType="numeric"
+              returnKeyType="go"
+              onChangeText={t => setMaxJogadores(t)}
+              value={maxJogadores}
+            />
+            <Div>
+              <Text>Convidar: </Text>
+              <CheckBox value={convite} onValueChange={setConvite} />
+            </Div>
+            <Div>
+              <Image source={{uri: jogo.urlFoto}} />
+              <JogosPicker jogos={jogos} onJogoSelecionado={setJogo} />
+            </Div>
+            <Text>Particpantes: {numJogadores}</Text>
+            <MyButtom text="Salvar" onClick={salvar} />
+            <DeleteButton texto="Excluir" onClick={excluir} />
+          </Scrool>
+          : <Scrool>
+            <Div>
+              <P>Lobby: {nome}</P>
+            </Div>
+            <Div>
+              <P>Máximo de jogadores: {maxJogadores}</P>
+            </Div>
+            <Div>
+              <Image source={{uri: jogo.urlFoto}} />
+              <P>{jogo.nome}</P>
+            </Div>
+            <Div>
+              <Text>Particpantes: {numJogadores}</Text>
+            </Div>
+          </Scrool> 
+        }
+        {loading && <Loading />}
+      </Container>
+    );
+  }
 };
 
 export default Lobby;
