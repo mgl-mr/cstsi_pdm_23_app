@@ -9,6 +9,7 @@ import {JogosContext} from '../../context/JogoProvider';
 import Card from './Card';
 import AddFloatButton from '../../components/AddFloatButton';
 import JogosPicker from '../../components/JogosPicker';
+import MyButtom from '../../components/MyButtom';
 import Loading from '../../components/Loading';
 import {Container, FlatList, Button} from './styles';
 import {COLORS} from '../../assets/colors';
@@ -77,6 +78,10 @@ const Lobbys = ({navigation}) => {
   return (
     <Container>
       <JogosPicker jogos={jogos} onJogoSelecionado={filtraLobbys} />
+      <MyButtom
+        text="Visualizar no Mapa"
+        onClick={() => navigation.navigate('LobbyMap')}
+      />
       <FlatList
         data={lobbysFiltrados !== '' ? lobbysFiltrados : lobbys}
         renderItem={renderItem}

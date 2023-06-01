@@ -23,6 +23,8 @@ const Lobby = ({navigation}) => {
   const [numJogadores, setNumjogadores] = useState('');
   const [jogadores, setJogadores] = useState('');
   const [convite, setConvite] = useState(false);
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
   const [jogo, setJogo] = useState('');
   const [loading, setLoading] = useState(false);
   const [carregandoLobby, setCarregandoLobby] = useState(true);
@@ -35,6 +37,8 @@ const Lobby = ({navigation}) => {
       setNumjogadores(lobby.numJogadores);
       setJogadores(lobby.jogadores);
       setConvite(lobby.convidar);
+      setLatitude(lobby.latitude);
+      setLongitude(lobby.longitude);
       setJogo(lobby.jogo);
       setNome(lobby.nome);
       setCarregandoLobby(false);
@@ -132,6 +136,11 @@ const Lobby = ({navigation}) => {
     );
   };
 
+  function onGoBack(lat, long) {
+    setLatitude(lat.toString());
+    setLongitude(long.toString());
+  }
+
   if (carregandoLobby) {
     return(
       <Container>
@@ -165,7 +174,19 @@ const Lobby = ({navigation}) => {
               <Image source={{uri: jogo.urlFoto}} />
               <JogosPicker jogos={jogos} onJogoSelecionado={setJogo} />
             </Div>
+            <Text>Latitude: {latitude}</Text>
+            <Text>Longitude: {longitude}</Text>
             <Text>Particpantes: {numJogadores}</Text>
+            <MyButtom
+              text="Alterar Coordenadas no Mapa"
+              onClick={() => navigation.navigate(
+                'LobbyMap',
+                {
+                  onGoBack,
+                  edit: lobbyId
+                }
+              )}
+            />
             <MyButtom text="Salvar" onClick={salvar} />
             <DeleteButton texto="Excluir" onClick={excluir} />
           </Scrool>

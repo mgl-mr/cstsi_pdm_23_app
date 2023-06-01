@@ -16,6 +16,7 @@ import Estudante from '../screens/Estudante';
 import Lobbys from '../screens/Lobbys';
 import AdicionarLobby from '../screens/AdicionarLobby';
 import Lobby from '../screens/Lobby';
+import LobbyMap from '../screens/LobbyMap';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -102,6 +103,13 @@ const Navigator = () => (
         component={AdicionarLobby}
         name="AdicionarLobby"
         options={{tabBarLabel: 'Adicionar Lobby', presentation: 'modal'}}
+      />
+      <Stack.Screen
+        component={LobbyMap}
+        name="LobbyMap"
+        options={{
+          presentation: 'modal',
+        }}
       />
     </Stack.Navigator>
   </NavigationContainer>

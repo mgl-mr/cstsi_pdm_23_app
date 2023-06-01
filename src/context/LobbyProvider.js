@@ -21,6 +21,8 @@ export const LobbyProvider = ({children}) => {
             maxJogadores: doc.data().maxJogadores,
             numJogadores: doc.data().numJogadores,
             convidar: doc.data().convidar,
+            latitude: doc.data().latitude,
+            longitude: doc.data().longitude,
             idDono: doc.data().id_dono,
             jogo: doc.data().jogo,
           });
@@ -45,6 +47,8 @@ export const LobbyProvider = ({children}) => {
           numJogadores: doc.data().numJogadores,
           jogadores: doc.data().jogadores,
           convidar: doc.data().convidar,
+          latitude: doc.data().latitude,
+          longitude: doc.data().longitude,
           idDono: doc.data().id_dono,
           jogo: doc.data().jogo,
         });
@@ -64,6 +68,8 @@ export const LobbyProvider = ({children}) => {
         nome: lobby.nome,
         maxJogadores: lobby.maxJogadores,
         convidar: lobby.convidar,
+        latitude: lobby.latitude,
+        longitude: lobby.longitude,
         id_dono: lobby.id_dono,
         jogo: lobby.jogo,
       };

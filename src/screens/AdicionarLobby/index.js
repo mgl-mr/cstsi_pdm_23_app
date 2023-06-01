@@ -9,6 +9,7 @@ import {JogosContext} from '../../context/JogoProvider';
 import Loading from '../../components/Loading';
 import JogosPicker from '../../components/JogosPicker';
 import MyButtom from '../../components/MyButtom';
+import DeleteButton from '../../components/DeleteButton';
 import {Container, Div, TextInput, Text} from './styles';
 
 const AdicionarLobby = ({navigation}) => {
@@ -16,6 +17,8 @@ const AdicionarLobby = ({navigation}) => {
   const [nome, setNome] = useState('');
   const [maxJogadores, setMaxJogadores] = useState('');
   const [convite, setConvite] = useState(false);
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
   const [jogo, setJogo] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -33,6 +36,10 @@ const AdicionarLobby = ({navigation}) => {
       showToastWithGravity('Preencha todos os campos!');
       return 0;
     }
+    if (latitude === '' || longitude === '') {
+      showToastWithGravity('Defina a localização!');
+      return 0;
+    }
     if (nome.length > 20) {
       showToastWithGravity('Nome com mais de 20 caracteres.');
       return 0;
@@ -47,6 +54,8 @@ const AdicionarLobby = ({navigation}) => {
     lobby.nome = nome;
     lobby.maxJogadores = maxJogadores;
     lobby.convidar = convite;
+    lobby.latitude = latitude;
+    lobby.longitude = longitude;
     lobby.id_dono = auth().currentUser.uid;
     lobby.jogo = jogo;
 
@@ -73,6 +82,12 @@ const AdicionarLobby = ({navigation}) => {
       ToastAndroid.TOP,
     );
   };
+
+  function onGoBack(lat, long) {
+    setLatitude(lat.toString());
+    setLongitude(long.toString());
+  }
+
   return (
     <Container>
       <TextInput
@@ -89,11 +104,29 @@ const AdicionarLobby = ({navigation}) => {
         onChangeText={t => setMaxJogadores(t)}
         value={maxJogadores}
       />
+      <TextInput
+        placeholder="Latitude"
+        editable={false}
+        keyboardType="default"
+        returnKeyType="go"
+        value={latitude}
+      />
+      <TextInput
+        placeholder="Longitude"
+        editable={false}
+        keyboardType="default"
+        returnKeyType="go"
+        value={longitude}
+      />
       <Div>
         <Text>Convidar: </Text>
         <CheckBox value={convite} onValueChange={setConvite} />
       </Div>
       <JogosPicker jogos={jogos} onJogoSelecionado={setJogo} />
+      <DeleteButton
+        texto="Obter Coordenadas no Mapa"
+        onClick={() => navigation.navigate('LobbyMap', {onGoBack})}
+      />
       <MyButtom text="Salvar" onClick={salvar} />
       {loading && <Loading />}
     </Container>

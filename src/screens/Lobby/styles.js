@@ -38,7 +38,7 @@ export const TextInput = styled.TextInput`
 `;
 
 export const Text = styled.Text`
-  width: 45%;
+  width: 100%;
   height: 26px;
   font-size: 16px;
   color: ${COLORS.black};
